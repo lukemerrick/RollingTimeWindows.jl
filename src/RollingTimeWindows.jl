@@ -4,13 +4,13 @@ import Dates
 export RollingTimeWindow
 
 struct RollingTimeWindow
-    timestamps::AbstractArray{Dates.AbstractDateTime}
+    timestamps::AbstractArray{T} where {T<:Dates.AbstractDateTime}
     period::Dates.Period
 end
 
 struct RollingTimeWindowState
     index::Int
-    start_timestamp::Union{Nothing, Dates.AbstractDateTime}
+    start_timestamp::Union{Nothing, T} where {T<:Dates.AbstractDateTime}
 end
 RollingTimeWindowState() = RollingTimeWindowState(1, nothing)
 
@@ -31,11 +31,11 @@ function Base.iterate(
     end
     end_index = index - 1
     next_state = RollingTimeWindowState(index, end_timestamp)
-    return (start_index:end_index, next_state)
+    return ((start_index:end_index, start_timestamp, end_timestamp), next_state)
 end
 
 Base.IteratorSize(IterType::RollingTimeWindow) = Base.SizeUnknown()
 Base.IteratorEltype(IterType::RollingTimeWindow) = Base.HasEltype()
-Base.eltype(IterType::RollingTimeWindow) = UnitRange{Int}
+Base.eltype(IterType::RollingTimeWindow) = Tuple{UnitRange{Int}, T, T} where {T <: Dates.AbstractDateTime}
 
 end
