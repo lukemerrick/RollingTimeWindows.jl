@@ -26,7 +26,6 @@ function Base.iterate(
     start_index = index
     start_timestamp = state.start_timestamp === nothing ? floor(rolling.timestamps[start_index], rolling.period) : state.start_timestamp
     end_timestamp = start_timestamp + rolling.period
-    println(end_timestamp)
     while index <= max_index && rolling.timestamps[index] < end_timestamp
         index += 1
     end
